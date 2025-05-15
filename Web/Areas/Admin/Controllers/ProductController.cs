@@ -55,7 +55,7 @@ namespace Web.Areas.Admin.Controllers
                     }
                     product.Image = imageName;
                 }
-                _dataContext.Products.Add(product);
+                _dataContext.Add(product);
                 await _dataContext.SaveChangesAsync();
                 TempData["success"] = "Thêm sản phẩm thành công";
                 return RedirectToAction("Index");

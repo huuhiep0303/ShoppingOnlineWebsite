@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ProductModel>
 
 <div class="col-sm-3">
-	@Html.Partial("_SidebarPartial");
+	@Html.Partial("_SidebarPartial")
 </div>
 
 <style>
@@ -21,7 +21,7 @@
 				<div class="product-image-wrapper">
 					<div class="single-products">
 						<div class="productinfo text-center">
-							<img src="~/media/products/@item.Image" alt="@item.Name" width="100%" />
+							<img src="~/media/products/@item.Image" alt="@item.Name" width="100%" height="200px"/>
 							<h2>$@item.Price</h2>
 							<p>@item.Name</p>
 							<p>Catogory: @item.Category.Name</p>
