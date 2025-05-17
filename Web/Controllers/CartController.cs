@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Web.Models;
 using Web.Models.ViewModels;
-using Web.Repositoty;
+using Web.Repository;
 
 namespace Web.Controllers
 {

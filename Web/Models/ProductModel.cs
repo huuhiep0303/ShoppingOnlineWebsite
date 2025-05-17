@@ -25,8 +25,6 @@ namespace Web.Models
 
         [Required, Range(1, int.MaxValue, ErrorMessage = "Yêu cầu chọn 1 thương hiệu")]
         public int BrandID { get; set; }
-
-
         [Required, Range(1, int.MaxValue, ErrorMessage = "Yêu cầu chọn 1 danh mục")]
         public int CategoryID { get; set; }
         // Navigation properties

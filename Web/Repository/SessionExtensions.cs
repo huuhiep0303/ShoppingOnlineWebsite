@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Web.Repositoty
+namespace Web.Repository
 {
     public static class SessionExtensions
     {

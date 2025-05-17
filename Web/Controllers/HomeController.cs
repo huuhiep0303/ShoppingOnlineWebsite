@@ -2,7 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Models;
-using Web.Repositoty;
+using Web.Repository;
 
 namespace Web.Controllers;
 

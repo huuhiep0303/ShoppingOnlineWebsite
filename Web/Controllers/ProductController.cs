@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Data;
-using Web.Repositoty;
+using Web.Repository;
 
 namespace Web.Controllers
 {

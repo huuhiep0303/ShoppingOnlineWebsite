@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Web.Models;
-using Web.Repositoty;
+using Web.Repository;
 
 namespace Web
 {
@@ -42,7 +42,7 @@ namespace Web
                 // options.Password.RequiredUniqueChars = 1;
 
                 // User settings.
-                options.User.RequireUniqueEmail = true;
+                options.User.RequireUniqueEmail = false;
             });
 
             var app = builder.Build();
@@ -57,7 +57,7 @@ namespace Web
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }
+            } 
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

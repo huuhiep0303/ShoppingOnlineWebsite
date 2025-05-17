@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Web.Repositoty.Components
+namespace Web.Repository.Components
 {
     public class CategoriesViewComponent : ViewComponent 
     {

@@ -5,5 +5,6 @@ namespace Web.Models
     public class AppUserModel : IdentityUser
     {
         public string Career { get; set; }
+        public string RoleID { get; set; }
     }
 }

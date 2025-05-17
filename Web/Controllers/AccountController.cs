@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Web.Models;
+using Web.Models.ViewModels;
 
 namespace Web.Controllers
 { 
@@ -14,13 +15,24 @@ namespace Web.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult Login(string returnURL)
         {
-            return View();
+            return View(new LoginViewModel { ReturnURL = returnURL});
         }
-        public async Task<IActionResult> Login()
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel loginVM)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(loginVM.Username, loginVM.Password, false, false);
+                if (result.Succeeded)
+                {
+                    return Redirect(loginVM.ReturnURL ?? "/");
+                }
+                ModelState.AddModelError("", "Invalid username or password");
+            }
+            return View(loginVM);
         }
         [HttpGet]
         public IActionResult Register()
@@ -33,11 +45,11 @@ namespace Web.Controllers
             if (ModelState.IsValid)
             {
                 AppUserModel newUser = new AppUserModel { UserName = usermodel.Username, Email = usermodel.Email };
-                IdentityResult result = await _userManager.CreateAsync(newUser);
+                IdentityResult result = await _userManager.CreateAsync(newUser, usermodel.Password);
                 if (result.Succeeded)
                 {
                     TempData["success"] = "Register successfully";
-                    return Redirect("/account");
+                    return Redirect("/account/login");
                 } 
                 foreach(IdentityError error in result.Errors)
                 {
@@ -45,6 +57,11 @@ namespace Web.Controllers
                 }
             } 
             return View(usermodel);
+        }
+        public async Task<IActionResult> Logout(string returnURL = "/")
+        {
+            await _signInManager.SignOutAsync();
+            return Redirect(returnURL);
         }
     }
 }

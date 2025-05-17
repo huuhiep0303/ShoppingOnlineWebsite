@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Web.Models;
 
-namespace Web.Repositoty
+namespace Web.Repository
 {
     public class SeedData
     {

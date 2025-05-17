@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Models;
-using Web.Repositoty;
+using Web.Repository;
 
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin, Author")]
+    [Route("Admin/Brand")]
     public class BrandController : Controller
     {
         private readonly DataContext _dataContext;
@@ -13,11 +16,13 @@ namespace Web.Areas.Admin.Controllers
         {
             _dataContext = context;
         }
+        [Route("Index")]
         public async Task<IActionResult> Index()
         {
             return View(await _dataContext.Brands.OrderByDescending(p => p.Id).ToListAsync());
         }
-        public async Task<IActionResult> Create()
+        [Route("Create")]
+        public IActionResult Create()
         {
             return View();
         }
@@ -26,6 +31,7 @@ namespace Web.Areas.Admin.Controllers
             BrandModel brand = await _dataContext.Brands.FindAsync(id);
             return View(brand);
         }
+        [Route("Create")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(BrandModel brand)
