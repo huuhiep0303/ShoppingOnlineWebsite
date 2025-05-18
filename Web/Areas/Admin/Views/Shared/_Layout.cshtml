@@ -8,6 +8,7 @@
 	<title>@ViewData["Title"] - Admin Areas</title>
 	<link href="~/css/bootstrap.min.css" rel="stylesheet">
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">
+	<link href="//cdn.datatables.net/2.3.1/css/dataTables.dataTables.min.css" rel="stylesheet">
 	<link href="~/css/prettyPhoto.css" rel="stylesheet">
 	<link href="~/css/price-range.css" rel="stylesheet">
 	<link href="~/css/animate.css" rel="stylesheet">
@@ -67,12 +68,13 @@
 						</div>
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
-								<li><a asp-controller="Home" class="active">Home</a></li>
+								<li><a asp-area="" asp-controller="Home" asp-action="Index" class="active">Home</a></li>
 								<li><a asp-controller="Product">Manage Product</a></li>
 								<li><a asp-controller="Category">Manage Category</a></li>
 								<li><a asp-controller="Brand">Manage Brand</a></li>
 								<li><a asp-controller="Order" asp-action="Index">Manage Order</a></li>
 								<li><a asp-controller="User" asp-action="Index">Manage User</a></li>
+								<li><a asp-controller="Role" asp-action="Index">Manage Role</a></li>
 							</ul>
 						</div>
 					</div>
@@ -100,8 +102,12 @@
 	<script src="~/js/jquery.scrollUp.min.js"></script>
 	<script src="~/js/price-range.js"></script>
 	<script src="~/js/jquery.prettyPhoto.js"></script>
+	<script src="//cdn.datatables.net/2.3.1/js/dataTables.min.js"></script>
 	<script src="~/js/main.js"></script>
 	<script src="~/backend/js/site.js"></script>
+	<script>
+		let table = new DataTable('#mytable');
+	</script>
 	@await RenderSectionAsync("Scripts", required:false)
 
 </body>

@@ -28,6 +28,8 @@ namespace Web.Areas.Admin.Controllers
         {
             var usersWithRoles = await (from u in _dataContext.Users
                                         join ur in _dataContext.UserRoles on u.Id equals ur.UserId
+                                        into UserRoles
+                                        from ur in UserRoles.DefaultIfEmpty()
                                         join r in _dataContext.Roles on ur.RoleId equals r.Id
                                         select new { User = u, RoleName = r.Name }).ToListAsync();
             return View(usersWithRoles);

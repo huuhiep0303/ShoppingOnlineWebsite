@@ -3,13 +3,12 @@
 }
 <h3>List Users</h3>
 <a class="btn btn-warning" asp-action="Create" asp-controller="User">Add user</a>
-<table class="table">
+<table class="table" id="mytable">
     <thead>
         <tr>
             <th scope="col">ID</th>
             <th scope="col">Username</th>
             <th scope="col">Email</th>
-            <th scope="col">PasswordHash</th>
             <th scope="col">Phone</th>
             <th scope="col">Role</th>
             <th scope="col">Action</th>
@@ -22,7 +21,6 @@
                 <td>@usersWithRoles.User.Id</td>
                 <td>@usersWithRoles.User.UserName</td>
                 <td>@usersWithRoles.User.Email</td>
-                <td>@usersWithRoles.User.PasswordHash</td>
                 <td>@usersWithRoles.User.PhoneNumber</td>
                 <td>@usersWithRoles.RoleName</td>
                 <td>

@@ -9,7 +9,7 @@ using Web.Repository;
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin, Author")]
+    [Authorize(Roles = "Author")]
     public class CategoryController : Controller
     {
         private readonly DataContext _dataContext;
@@ -17,9 +17,26 @@ namespace Web.Areas.Admin.Controllers
         {
             _dataContext = context;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pg = 1)
         {
-            return View(await _dataContext.Categories.OrderByDescending(p => p.Id).ToListAsync());
+            List<CategoryModel> category = _dataContext.Categories.ToList(); // 33 datas
+            const int pageSize = 10;
+
+            if(pg < 1) //page < 1;
+            {
+                pg = 1; //page ==1
+            }
+            int recsCount = category.Count(); //33 items;
+            var pager = new Paginate(recsCount, pg, pageSize);
+
+            int recSkip = (pg - 1) * pageSize; //(3 - 1) * 10; 
+
+            //category.Skip(20).Take(10).ToList()
+
+            var data = category.Skip(recSkip).Take(pager.PageSize).ToList();
+
+            ViewBag.Pager = pager;
+            return View(data);
         }
         public async Task<IActionResult> Edit(int id)
         {

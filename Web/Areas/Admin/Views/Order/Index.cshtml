@@ -1,9 +1,17 @@
 ﻿@model IEnumerable<OrderModel>
 @{
     ViewData["Title"] = "Order Listed";
+    Paginate pager = new Paginate();
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
 }
 <h3>List Order</h3>
-<table class="table">
+<table class="table" id="mytable">
     <thead>
         <tr>
             <th scope="col">ID</th>
@@ -25,11 +33,11 @@
                 <td>
                     @if (@item.Status == 1)
                     {
-                        <span class="text text-success">Pending Order</span>
+                        <span class="text text-danger">Pending Order</span>
                     }
                     else
                     {
-                        <span class="text text-danger">Successfully order</span>
+                        <span class="text text-success">Successfully order</span>
                     }
                 </td>
                 <td>
@@ -41,3 +49,4 @@
 
     </tbody>
 </table>
+<partial name="_paging" model="@pager" />
