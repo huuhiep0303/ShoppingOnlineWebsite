@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Web.Areas.Admin.Repository;
 using Web.Models;
 using Web.Repository;
 
@@ -16,6 +17,8 @@ namespace Web
             {
                 options.UseSqlServer(builder.Configuration["ConnectionStrings:ConnectedDb"]);
             });  
+
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();

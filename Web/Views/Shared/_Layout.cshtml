@@ -41,6 +41,15 @@
 								<li><a href="https://github.com/huuhiep0303"><i class="fa fa-shopping-cart"></i>Contact us</a></li>
 								@if(User.Identity?.IsAuthenticated ?? false)
 								{
+									<li class="dropdown">
+										<a style="cursor: pointer" class="dropdown-toggle" data-toggle="dropdown">
+											<i class="fa fa-user"></i>Account<span class="caret"></span>
+										</a>
+										<ul class="dropdown-menu">
+											<li><a asp-controller="Account" asp-action="History">History Orders</a></li>
+											<li><a asp-controller="Account" asp-action="UpdateAccount">Update account information</a></li>
+										</ul>
+									</li>
 									<li><a asp-controller="Account" asp-action="Logout"><i class="fa fa-lock"></i>Hi @User.Identity.Name, Logout</a></li>
 								} else
 								{
@@ -73,6 +82,14 @@
 								<li><a asp-area="Admin" asp-controller="Product" asp-action="Index">Manage</a></li>
 							</ul>
 						</div>
+					</div>
+					<div class="col-sm-3">
+						<form asp-controller="Product" asp-action="Search" method="post">
+							<div class="search_box pull-right">
+                                <input type="text" name="searchText" placeholder="Search" />
+                                <button type="submit" class="btn btn-warning"><i class="fa fa-search"></i> Search</button>
+                            </div>
+						</form>
 					</div>
 				</div>
 			</div>

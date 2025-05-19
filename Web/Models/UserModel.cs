@@ -11,5 +11,8 @@ namespace Web.Models
         public string Email { get; set; }
         [DataType(DataType.Password), Required(ErrorMessage = " Enter password")]
         public string Password { get; set; }
+        [Required]
+        [Phone]
+        public string PhoneNumber { get; set; }
     }
 }

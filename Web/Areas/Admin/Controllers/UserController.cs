@@ -27,11 +27,12 @@ namespace Web.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var usersWithRoles = await (from u in _dataContext.Users
-                                        join ur in _dataContext.UserRoles on u.Id equals ur.UserId
-                                        into UserRoles
+                                        join ur in _dataContext.UserRoles on u.Id equals ur.UserId into UserRoles
                                         from ur in UserRoles.DefaultIfEmpty()
-                                        join r in _dataContext.Roles on ur.RoleId equals r.Id
-                                        select new { User = u, RoleName = r.Name }).ToListAsync();
+                                        join r in _dataContext.Roles on ur.RoleId equals r.Id into Roles
+                                        from r in Roles.DefaultIfEmpty()
+                                        select new { User = u, RoleName = r != null ? r.Name : "No Role" }).ToListAsync();
+
             return View(usersWithRoles);
         }
         [HttpGet]
@@ -112,17 +113,36 @@ namespace Web.Areas.Admin.Controllers
                 existingUser.UserName = user.UserName;
                 existingUser.Email = user.Email;
                 existingUser.PhoneNumber = user.PhoneNumber;
-                existingUser.RoleID = user.RoleID;
 
-                var updateUserResult = await _userManager.UpdateAsync(existingUser);
-                if (updateUserResult.Succeeded)
+                var currentRoles = await _userManager.GetRolesAsync(existingUser);
+                var updateResult = await _userManager.UpdateAsync(existingUser);
+
+                if (!updateResult.Succeeded)
                 {
-                    return RedirectToAction("Index", "User", new { area = "Admin" });
-                } else
-                {
-                    AddIdentityErrors(updateUserResult);
+                    AddIdentityErrors(updateResult);
                     return View(existingUser);
                 }
+                // Xoá hết các role cũ
+                var removeResult = await _userManager.RemoveFromRolesAsync(existingUser, currentRoles);
+                if (!removeResult.Succeeded)
+                {
+                    AddIdentityErrors(removeResult);
+                    return View(existingUser);
+                }
+
+                // Lấy role từ RoleID
+                var role = await _roleManager.FindByIdAsync(user.RoleID);
+                if (role != null)
+                {
+                    var addRoleResult = await _userManager.AddToRoleAsync(existingUser, role.Name);
+                    if (!addRoleResult.Succeeded)
+                    {
+                        AddIdentityErrors(addRoleResult);
+                        return View(existingUser);
+                    }
+                }
+
+                return RedirectToAction("Index", "User", new { area = "Admin" });
             }
             var roles = await _roleManager.Roles.ToListAsync();
             ViewBag.Roles = new SelectList(roles, "Id", "Name");

@@ -6,5 +6,6 @@ namespace Web.Models
     {
         public string Career { get; set; }
         public string RoleID { get; set; }
+        public string Token { get; set; }
     }
 }
