@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Web.Models;
 using Web.Models.ViewModels;
@@ -24,7 +25,8 @@ namespace Web.Controllers
             if (userEmail == null)
             {
                 return RedirectToAction("Login", "Account");
-            } else
+            }
+            else
             {
                 var orderCode = Guid.NewGuid().ToString();
                 var orderItem = new OrderModel();
@@ -35,7 +37,7 @@ namespace Web.Controllers
                 _dataContext.Add(orderItem);
                 await _dataContext.SaveChangesAsync();
                 List<CartItemModel> CartItems = HttpContext.Session.GetJson<List<CartItemModel>>("Cart") ?? new List<CartItemModel>();
-                foreach(var cart in CartItems)
+                foreach (var cart in CartItems)
                 {
                     var orderDetail = new OrderDetails();
                     orderDetail.CustomerName = userEmail;
@@ -51,6 +53,32 @@ namespace Web.Controllers
                 return RedirectToAction("Index", "Cart");
             }
             return View();
+        }
+        public async Task<IActionResult> MyOrders()
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            if (userEmail == null)
+                return RedirectToAction("Login", "Account");
+
+            var orders = await _dataContext.Orders
+                .Where(o => o.CustomerName == userEmail)
+                .OrderByDescending(o => o.CreatedDate).ToListAsync();
+
+            return View(orders);
+        }
+        public async Task<IActionResult> OrderDetails(int id)
+        {
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var order = await _dataContext.Orders.FirstOrDefaultAsync(o => o.Id == id && o.CustomerName == userEmail);
+            if (order == null) return NotFound();
+
+            var details = await _dataContext.OrderDetails
+                .Where(d => d.OrderCode == order.OrderCode)
+                .Include(d => d.Product)
+                .ToListAsync();
+
+            ViewBag.Order = order;
+            return View(details);
         }
     }
 }

@@ -1,0 +1,27 @@
+@model Web.Models.ReviewModel
+@{
+    ViewBag.Title = "Đánh giá sản phẩm";
+}
+
+<h2>Đánh giá sản phẩm</h2>
+
+<form asp-action="Review" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="ProductID" />
+    <input type="hidden" asp-for="OrderID" />
+    <div class="form-group">
+        <label>Chấm điểm (1-5):</label>
+        <input asp-for="Rating" class="form-control" type="number" min="1" max="5" required />
+        <span asp-validation-for="Rating" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label>Bình luận:</label>
+        <textarea asp-for="Comment" class="form-control" rows="4" maxlength="1000"></textarea>
+        <span asp-validation-for="Comment" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
