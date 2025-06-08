@@ -1,3 +1,4 @@
+using System.Reflection.Emit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Web.Areas.Admin.Repository;
@@ -90,9 +91,9 @@ namespace Web
 
             //Sedding Data
             var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<DataContext>();
-            SeedData.SeedingData(context);
+            SeedData.SeedingData(context, app.Services.CreateScope().ServiceProvider);
 
-            app.Run();
+            app.Run();  
         }
     }
 }

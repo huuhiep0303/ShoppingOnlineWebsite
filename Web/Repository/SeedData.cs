@@ -1,13 +1,47 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Web.Models;
 
 namespace Web.Repository
 {
     public class SeedData
     {
-        public static void SeedingData(DataContext _context)
+        public static async Task SeedingData(DataContext _context, IServiceProvider serviceProvider)
         {
             _context.Database.Migrate();
+
+            // Seed roles
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            var rolesToSeed = new List<IdentityRole>
+                {
+                    new IdentityRole
+                    {
+                        Id = "1",
+                        Name = "Admin",
+                        NormalizedName = "ADMIN"
+                    },
+                    new IdentityRole
+                    {
+                        Id = "2",
+                        Name = "Customer",
+                        NormalizedName = "CUSTOMER"
+                    },
+                    new IdentityRole
+                    {
+                        Id = "3",
+                        Name = "Author",
+                        NormalizedName = "AUTHOR"
+                    }
+                };
+
+            foreach (var role in rolesToSeed)
+            {
+                if (!await roleManager.RoleExistsAsync(role.Name))
+                {
+                    await roleManager.CreateAsync(role);
+                }
+            }
             if (!_context.Products.Any())
             {
                 CategoryModel Macbook = new CategoryModel
@@ -60,8 +94,8 @@ namespace Web.Repository
                         Brand = Samsung,
                     }
                 );
+                _context.SaveChanges();
             }
-            _context.SaveChanges();
         }
     }
 }

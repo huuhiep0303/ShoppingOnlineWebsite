@@ -9,7 +9,7 @@ using Web.Repository;
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Author")]
+    [Authorize(Roles = "Admin, Author")]
     public class CategoryController : Controller
     {
         private readonly DataContext _dataContext;

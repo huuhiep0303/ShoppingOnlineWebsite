@@ -39,7 +39,7 @@ namespace Web.Areas.Admin.Controllers
             return View(data);
         }
         [HttpGet]
-        [Route("ViewOrder")]
+        [Route("ViewOrder/{orderCode}")]
         public async Task<IActionResult> ViewOrder(string orderCode)
         {
             var detailsOrder = await _dataContext.OrderDetails.Include(od => od.Product).Where(od => od.OrderCode == orderCode).ToListAsync();

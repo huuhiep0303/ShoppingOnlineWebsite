@@ -197,12 +197,20 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(UserModel usermodel)
         {
+
             if (ModelState.IsValid)
             {
+                var existingUser = await _userManager.FindByEmailAsync(usermodel.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "Email này đã được sử dụng.");
+                    return View(usermodel);
+                }
                 AppUserModel newUser = new AppUserModel { UserName = usermodel.Username, Email = usermodel.Email, PhoneNumber = usermodel.PhoneNumber };
                 IdentityResult result = await _userManager.CreateAsync(newUser, usermodel.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(newUser, "Admin");
                     TempData["success"] = "Register successfully";
                     return Redirect("/account/login");
                 } 
