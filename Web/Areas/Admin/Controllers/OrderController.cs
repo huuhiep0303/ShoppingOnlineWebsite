@@ -20,7 +20,7 @@ namespace Web.Areas.Admin.Controllers
         public async Task<IActionResult> Index(int pg = 1)
         {
             List<OrderModel> order = _dataContext.Orders.ToList(); // 33 datas
-            const int pageSize = 10;
+            const int pageSize = 5;
 
             if (pg < 1) //page < 1;
             {

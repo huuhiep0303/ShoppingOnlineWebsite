@@ -21,7 +21,7 @@ namespace Web.Areas.Admin.Controllers
         public async Task<IActionResult> Index(int pg = 1)
         {
             List<BrandModel> brand = _dataContext.Brands.ToList(); // 33 datas
-            const int pageSize = 10;
+            const int pageSize = 5;
 
             if (pg < 1) //page < 1;
             {
