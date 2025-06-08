@@ -16,5 +16,12 @@ namespace Web.Repository
         public DbSet<CategoryModel> Categories { get; set; }
         public DbSet<OrderModel> Orders { get; set; }
         public DbSet<OrderDetails> OrderDetails { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder); // nhớ gọi base
+            modelBuilder.Entity<OrderDetails>()
+                .Property(o => o.Price)
+                .HasPrecision(18, 2);
+        }
     }
 }
