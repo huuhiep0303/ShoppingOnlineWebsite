@@ -24,6 +24,10 @@ namespace Web.Controllers
         {
 
         }
-        public async Task<IActionResult> InsertOrderById(int customerId, OrderDetails)
+        public async Task<IActionResult> InsertOrderById(int customerId, OrderDetails orderDetail)
+        {
+
+        }
+        public async Task<>
     }
 }
