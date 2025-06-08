@@ -8,7 +8,7 @@ using Web.Repository;
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin, Author")]
+    [Authorize(Roles = "Admin")]
     [Route("Admin/Brand")]
     public class BrandController : Controller
     {
@@ -44,6 +44,7 @@ namespace Web.Areas.Admin.Controllers
         {
             return View();
         }
+        [Route("Edit/{id}")]
         public async Task<IActionResult> Edit(int id)
         {
             BrandModel brand = await _dataContext.Brands.FindAsync(id);
@@ -84,6 +85,7 @@ namespace Web.Areas.Admin.Controllers
             }
             return View(brand);
         }
+        [Route("Edit/{id}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(BrandModel brand)
@@ -91,13 +93,24 @@ namespace Web.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 brand.Slug = brand.Name.Replace(" ", "-");
-                var slug = await _dataContext.Brands.FirstOrDefaultAsync(p => p.Slug == brand.Slug);
+                // Kiểm tra slug trùng nhưng phải loại trừ chính brand đang sửa
+                var slug = await _dataContext.Brands.FirstOrDefaultAsync(p => p.Slug == brand.Slug && p.Id != brand.Id);
                 if (slug != null)
                 {
                     ModelState.AddModelError("", "Thương hiệu đã có trong database");
                     return View(brand);
                 }
-                _dataContext.Update(brand);
+                // Lấy entity từ DB rồi cập nhật từng trường
+                var existedBrand = await _dataContext.Brands.FindAsync(brand.Id);
+                if (existedBrand == null)
+                {
+                    return NotFound();
+                }
+                existedBrand.Name = brand.Name;
+                existedBrand.Description = brand.Description;
+                existedBrand.Slug = brand.Slug;
+                existedBrand.Status = brand.Status;
+                _dataContext.Update(existedBrand);
                 await _dataContext.SaveChangesAsync();
                 TempData["success"] = "Cập nhật thương hiệu thành công";
                 return RedirectToAction("Index");
@@ -111,16 +124,29 @@ namespace Web.Areas.Admin.Controllers
                     foreach (var error in value.Errors)
                     {
                         errors.Add(error.ErrorMessage);
-                    } 
+                    }
                 }
                 string errorMsg = string.Join("\n", errors);
                 return BadRequest(errorMsg);
             }
-            return View(brand);
+            // return View(brand); // Không cần dòng này nữa
         }
+        [HttpGet]
+        [Route("Delete")]
         public async Task<IActionResult> Delete(int id)
         {
-            BrandModel brand = await _dataContext.Brands.FindAsync(id);
+            var brand = await _dataContext.Brands.FindAsync(id);
+            if (brand == null)
+            {
+                return NotFound();
+            }
+            // Kiểm tra xem có sản phẩm nào dùng brand này không
+            bool hasProduct = await _dataContext.Products.AnyAsync(p => p.BrandID == id);
+            if (hasProduct)
+            {
+                TempData["error"] = "Không thể xóa thương hiệu vì đang có sản phẩm sử dụng!";
+                return RedirectToAction("Index");
+            }
             _dataContext.Brands.Remove(brand);
             await _dataContext.SaveChangesAsync();
             TempData["success"] = "Xóa thương hiệu thành công";

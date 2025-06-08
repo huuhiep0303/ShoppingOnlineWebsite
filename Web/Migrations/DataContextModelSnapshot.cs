@@ -253,7 +253,7 @@ namespace Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brands", (string)null);
                 });
 
             modelBuilder.Entity("Web.Models.CategoryModel", b =>
@@ -280,7 +280,7 @@ namespace Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Web.Models.OrderDetails", b =>
@@ -310,7 +310,7 @@ namespace Web.Migrations
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("Web.Models.OrderModel", b =>
@@ -335,7 +335,7 @@ namespace Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Web.Models.ProductModel", b =>
@@ -375,44 +375,7 @@ namespace Web.Migrations
 
                     b.HasIndex("CategoryID");
 
-                    b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("Web.Models.ReviewModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Comment")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CustomerEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OrderID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OrderModelId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderModelId");
-
-                    b.ToTable("ReviewModel");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -494,18 +457,6 @@ namespace Web.Migrations
                     b.Navigation("Brand");
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Web.Models.ReviewModel", b =>
-                {
-                    b.HasOne("Web.Models.OrderModel", null)
-                        .WithMany("Reviews")
-                        .HasForeignKey("OrderModelId");
-                });
-
-            modelBuilder.Entity("Web.Models.OrderModel", b =>
-                {
-                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

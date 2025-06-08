@@ -7,7 +7,7 @@ using Web.Repository;
 namespace Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin, Author")]
+    [Authorize(Roles = "Admin")]
     [Route("Admin/Order")]
     public class OrderController : Controller
     {
