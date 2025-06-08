@@ -25,18 +25,7 @@ namespace Web.Models
         [DataType(DataType.Date)]
         public DateTime ExpiryDate { get; set; }
         public DateTime lastUpdate { get; set; }
-        public Inventory()
-        {
-            lastUpdate = DateTime.Now;
-        }
-        public Inventory(int ProductId, int initialQuantity, int ReorderQuantity, DateTime date)
-        {
-            productId = ProductId;
-            Quantity = initialQuantity;
-            ReorderLevel = ReorderQuantity;
-            ExpiryDate = date;
-            lastUpdate = DateTime.Now;
-        }
+        
 
         //Khi hàng dưới 50 thì cần nhập hàng lại
         public bool NeedRestock() => Quantity <= ReorderLevel - 50;

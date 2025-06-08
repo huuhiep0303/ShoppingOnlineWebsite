@@ -29,6 +29,9 @@ namespace Web.Models
         public int CategoryID { get; set; }
         // Navigation properties
 
+        [Required(ErrorMessage ="Yêu cầu nhập lượng hàng tồn kho")]
+        [Range(0,int.MaxValue,ErrorMessage ="Nhập số lượng lớn hơn 0.")]
+        public int StockQuantity { get; set; }
         public CategoryModel Category { get; set; }
         public BrandModel Brand { get; set; }
         public string Image { get; set; } 
