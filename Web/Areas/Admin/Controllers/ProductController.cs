@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Messaging;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -185,6 +186,34 @@ namespace Web.Areas.Admin.Controllers
             _dataContext.Products.Remove(product);
             await _dataContext.SaveChangesAsync();
             TempData["success"] = "Xóa sản phẩm thành công";
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> AddNumberProduct(int id, int quantity)
+        {
+            ProductModel product = await _dataContext.Products.FindAsync(id);
+            if (product == null)
+            {
+                return BadRequest("nahhh! No exist!");
+            }
+            else
+            {
+                product.StockQuantity += quantity;
+                TempData["Success"] = "Add success!";
+            }
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> Decrease(int id, int quantity)
+        {
+            ProductModel product = await _dataContext.Products.FindAsync(id);
+            if (product == null)
+            {
+                return BadRequest("Product isn't exist!");
+            }
+            else
+            {
+                product.StockQuantity -= quantity;
+                TempData["Success"] = "Decrease success!";
+            }
             return RedirectToAction("Index");
         }
     }

@@ -12,6 +12,9 @@ namespace Web.Models
 
         [Required(ErrorMessage = "Yêu cầu nhập tên sản phẩm")]
         public string Name { get; set; }
+        [Required(ErrorMessage = "Yêu cầu nhập số lượng sản phẩm")]
+        [Range(1, int.MaxValue,ErrorMessage ="Số lượng lớn hơn 0")]
+        public int Quantity { get; set; }
 
         public string Slug { get; set; }
 
