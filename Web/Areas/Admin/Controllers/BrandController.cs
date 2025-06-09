@@ -17,6 +17,7 @@ namespace Web.Areas.Admin.Controllers
         {
             _dataContext = context;
         }
+        [HttpGet("Index")]
         [Route("Index")]
         public async Task<IActionResult> Index(int pg = 1)
         {
@@ -39,18 +40,19 @@ namespace Web.Areas.Admin.Controllers
             ViewBag.Pager = pager;
             return View(data);
         }
+        [HttpGet("Create")]
         [Route("Create")]
         public IActionResult Create()
         {
             return View();
         }
+        [HttpGet("Edit/{id}")]
         public async Task<IActionResult> Edit(int id)
         {
             BrandModel brand = await _dataContext.Brands.FindAsync(id);
             return View(brand);
         }
-        [Route("Create")]
-        [HttpPost]
+        [HttpPost("Create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(BrandModel brand)
         {
@@ -84,7 +86,7 @@ namespace Web.Areas.Admin.Controllers
             }
             return View(brand);
         }
-        [HttpPost]
+        [HttpPost("Edit")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(BrandModel brand)
         {
@@ -118,6 +120,8 @@ namespace Web.Areas.Admin.Controllers
             }
             return View(brand);
         }
+        [HttpPost("Delete")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(ProductModel product)
         {
             BrandModel brand = await _dataContext.Brands.FindAsync(product.Id);
