@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Repository;
 
@@ -11,9 +12,11 @@ using Web.Repository;
 namespace Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250608221112_Update2")]
+    partial class Update2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -297,9 +300,6 @@ namespace Web.Migrations
                     b.Property<string>("OrderCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
                     b.Property<decimal>("Price")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -310,14 +310,7 @@ namespace Web.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasOne("Web.Models.Order", null)
-                     .WithMany()
-                     .HasForeignKey("OrderId")
-                     .OnDelete(DeleteBehavior.Cascade)
-                     .IsRequired();
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
 
                     b.HasIndex("ProductID");
 
@@ -447,7 +440,7 @@ namespace Web.Migrations
                 {
                     b.HasOne("Web.Models.OrderModel", "Order")
                         .WithMany()
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

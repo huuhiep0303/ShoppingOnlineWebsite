@@ -19,16 +19,16 @@
                 <td>@order.OrderCode</td>
                 <td>@order.CreatedDate.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
-                    @{
-                        string status = order.Status switch {
-                            1 => "Đang xử lý",
-                            2 => "Đang giao",
-                            3 => "Đã giao",
-                            4 => "Đã hủy",
-                            _ => "Không xác định"
-                        };
-                    }
-                    @status
+                    @* @{ *@
+                    @*     string status = order.Status switch { *@
+                    @*         1 => "Đang xử lý", *@
+                    @*         2 => "Đang giao", *@
+                    @*         3 => "Đã giao", *@
+                    @*         4 => "Đã hủy", *@
+                    @*         _ => "Không xác định" *@
+                    @*     }; *@
+                    @* } *@
+                    @order.Status
                 </td>
                 <td>
                     <a asp-action="OrderDetails" asp-route-id="@order.Id">Xem chi tiết</a>

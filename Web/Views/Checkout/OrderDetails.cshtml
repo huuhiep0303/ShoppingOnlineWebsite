@@ -6,16 +6,16 @@
 <h2>Chi tiết đơn hàng: @order.OrderCode</h2>
 <p>Ngày đặt: @order.CreatedDate.ToString("dd/MM/yyyy HH:mm")</p>
 <p>Trạng thái: 
-    @{
-        string status = order.Status switch {
-            1 => "Đang xử lý",
-            2 => "Đang giao",
-            3 => "Đã giao",
-            4 => "Đã hủy",
-            _ => "Không xác định"
-        };
-    }
-    @status
+    @* @{ *@
+    @*     string status = order.Status switch { *@
+    @*         1 => "Đang xử lý", *@
+    @*         2 => "Đang giao", *@
+    @*         3 => "Đã giao", *@
+    @*         4 => "Đã hủy", *@
+    @*         _ => "Không xác định" *@
+    @*     }; *@
+    @* } *@
+    @order.Status
 </p>
 <table class="table">
     <thead>
@@ -36,7 +36,7 @@
                 <td>@item.Quantity</td>
                 <td>@(item.Price * item.Quantity).ToString("N0")</td>
                 <td>
-                    @if(order.Status == 3) { // Đã giao mới cho đánh giá
+                    @if(order.Status == (OrderStatus)3) { // Đã giao mới cho đánh giá
                         <a asp-action="Review" asp-controller="Review" asp-route-productId="@item.ProductID" asp-route-orderId="@order.Id">Đánh giá</a>
                     }
                 </td>

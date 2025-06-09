@@ -42,11 +42,12 @@ namespace Web.Areas.Admin.Controllers
         [Route("ViewOrder/{orderCode}")]
         public async Task<IActionResult> ViewOrder(string orderCode)
         {
-            var detailsOrder = await _dataContext.OrderDetails.Include(od => od.Product).Where(od => od.OrderCode == orderCode).ToListAsync();
+            var detailsOrder = await _dataContext.OrderDetails.Include(od => od.Product).Include(od => od.Order).Where(od => od.OrderCode == orderCode).ToListAsync();
             return View(detailsOrder);
         }
         [HttpPost]
         [Route("UpdateOrder")]
+
         public async Task<IActionResult> UpdateOrder(string orderCode, int status)
         {
             var order = await _dataContext.Orders.FirstOrDefaultAsync(o => o.OrderCode == orderCode);
@@ -54,7 +55,29 @@ namespace Web.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            order.Status = status;
+            if (order.Status != (OrderStatus)status && status == 0)
+            {
+                var orderDetails = await _dataContext.OrderDetails
+                    .Where(od => od.OrderCode == orderCode)
+                    .ToListAsync();
+
+                foreach (var detail in orderDetails)
+                {
+                    var product = await _dataContext.Products.FirstOrDefaultAsync(p => p.Id == detail.ProductID);
+                    if (product == null)
+                    {
+                        return BadRequest(new { success = false, message = $"Không tìm thấy sản phẩm với ID {detail.ProductID}" });
+                    }
+
+                    if (product.StockQuantity < detail.Quantity)
+                    {
+                        return BadRequest(new { success = false, message = $"Sản phẩm {product.Name} không đủ hàng tồn." });
+                    }
+
+                    product.StockQuantity -= detail.Quantity;
+                }
+            }
+            order.Status = (OrderStatus)status;
             try
             {
                 await _dataContext.SaveChangesAsync();

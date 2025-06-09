@@ -32,7 +32,7 @@ namespace Web.Controllers
                 var orderItem = new OrderModel();
                 orderItem.OrderCode = orderCode;
                 orderItem.CustomerName = userEmail;
-                orderItem.Status = 1;
+                orderItem.Status = OrderStatus.Pending;
                 orderItem.CreatedDate = DateTime.Now;
                 _dataContext.Add(orderItem);
                 await _dataContext.SaveChangesAsync();
@@ -40,6 +40,7 @@ namespace Web.Controllers
                 foreach (var cart in CartItems)
                 {
                     var orderDetail = new OrderDetails();
+                    orderDetail.OrderId = orderItem.Id;
                     orderDetail.CustomerName = userEmail;
                     orderDetail.OrderCode = orderCode;
                     orderDetail.ProductID = cart.ProductID;

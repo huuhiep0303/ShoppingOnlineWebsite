@@ -82,6 +82,7 @@ namespace Web.Repository
                         Image = "mac.jpg",
                         Category = Macbook,
                         Brand = Apple,
+                        StockQuantity = 98,
                     },
                     new ProductModel
                     {
@@ -92,6 +93,7 @@ namespace Web.Repository
                         Image = "pc.jpg",
                         Category = PC,
                         Brand = Samsung,
+                        StockQuantity = 92,
                     }
                 );
                 _context.SaveChanges();

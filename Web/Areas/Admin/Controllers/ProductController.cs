@@ -146,6 +146,7 @@ namespace Web.Areas.Admin.Controllers
                 existed_product.Name = product.Name;
                 existed_product.Description = product.Description;
                 existed_product.Price = product.Price;
+                existed_product.StockQuantity = product.StockQuantity;
                 existed_product.CategoryID = product.CategoryID;
                 existed_product.BrandID = product.BrandID;
 

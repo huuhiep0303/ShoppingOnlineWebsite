@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Repository;
 
@@ -11,9 +12,11 @@ using Web.Repository;
 namespace Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20250608235050_aa")]
+    partial class aa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -310,11 +313,6 @@ namespace Web.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasOne("Web.Models.Order", null)
-                     .WithMany()
-                     .HasForeignKey("OrderId")
-                     .OnDelete(DeleteBehavior.Cascade)
-                     .IsRequired();
                     b.HasKey("Id");
 
                     b.HasIndex("OrderId");

@@ -31,7 +31,7 @@
                 <td>@item.CustomerName</td>
                 <td>@item.CreatedDate</td>
                 <td>
-                    @if (@item.Status == 1)
+                    @if (@item.Status == (OrderStatus)1)
                     {
                         <span class="text text-danger">Pending Order</span>
                     }

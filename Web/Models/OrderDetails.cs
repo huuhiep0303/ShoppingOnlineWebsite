@@ -6,8 +6,9 @@ namespace Web.Models
     {
         public int Id { get; set; }
         public string CustomerName { get; set; }
+        public int OrderId { get; set; }
         public string OrderCode { get; set; }
-        [ForeignKey("ProductID")]
+        [ForeignKey("OrderId")]
         public OrderModel Order { get; set; }
         public int ProductID { get; set; }
         public decimal Price { get; set; }
