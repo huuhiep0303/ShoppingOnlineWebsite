@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Web.Areas.Admin.Repository;
@@ -9,7 +10,7 @@ using Web.Models.ViewModels;
 using Web.Repository;
 
 namespace Web.Controllers
-{ 
+{
     public class AccountController : Controller
     {
         private UserManager<AppUserModel> _userManager;
@@ -26,65 +27,9 @@ namespace Web.Controllers
         [HttpGet]
         public IActionResult Login(string returnURL)
         {
-            return View(new LoginViewModel { ReturnURL = returnURL});
+            return View(new LoginViewModel { ReturnURL = returnURL });
         }
-        [HttpGet]
-        public async Task<IActionResult> UpdateAccount()
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
-            var user = await _userManager.FindByEmailAsync(userEmail);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user); // truyền model cho form Razor
-        }
-        [HttpPost]
-        public async Task<IActionResult> UpdateAccount(AppUserModel model)
-        {
-            if ((bool)!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
-            var userID = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userEmail = User.FindFirstValue(ClaimTypes.Email);
-
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            user.UserName = model.UserName;
-            user.Email = model.Email;
-            user.PhoneNumber = model.PhoneNumber;
-
-            // Nếu người dùng đổi mật khẩu
-            if (!string.IsNullOrEmpty(model.PasswordHash))
-            {
-                var passwordHasher = new PasswordHasher<AppUserModel>();
-                user.PasswordHash = passwordHasher.HashPassword(user, model.PasswordHash);
-            }
-
-            var result = await _userManager.UpdateAsync(user);
-            if (result.Succeeded)
-            {
-                TempData["success"] = "Account updated successfully";
-                return RedirectToAction("UpdateAccount");
-            }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
-            }
-
-            return View(model);
-        }
+        
         public async Task<IActionResult> NewPass(AppUserModel user, string token)
         {
             var checkUser = await _userManager.Users
@@ -95,7 +40,8 @@ namespace Web.Controllers
             {
                 ViewBag.Email = checkUser.Email;
                 ViewBag.Token = token;
-            } else
+            }
+            else
             {
                 TempData["error"] = "Email not found or token is not right";
                 return RedirectToAction("ForgetPass", "Account");
@@ -122,7 +68,8 @@ namespace Web.Controllers
                 await _userManager.UpdateAsync(checkUser);
                 TempData["success"] = "Password updated successfully";
                 return RedirectToAction("Login", "Account");
-            } else
+            }
+            else
             {
                 TempData["error"] = "Email not found or token is not right";
                 return RedirectToAction("ForgetPass", "Account");
@@ -151,7 +98,7 @@ namespace Web.Controllers
 
                 var receiver = checkMail.Email;
                 var subject = "Reset Password";
-                var body = "Click the link to reset your password " + "<a href='" +  $"{Request.Scheme}://{Request.Host}/Account/NewPass" 
+                var body = "Click the link to reset your password " + "<a href='" + $"{Request.Scheme}://{Request.Host}/Account/NewPass"
                     + $"?email=" + checkMail.Email + "&token=" + token + "'>";
 
                 await _emailSender.SendEmailAsync(receiver, subject, body);
@@ -213,12 +160,12 @@ namespace Web.Controllers
                     await _userManager.AddToRoleAsync(newUser, "Admin");
                     TempData["success"] = "Register successfully";
                     return Redirect("/account/login");
-                } 
-                foreach(IdentityError error in result.Errors)
+                }
+                foreach (IdentityError error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
                 }
-            } 
+            }
             return View(usermodel);
         }
         public async Task<IActionResult> Logout(string returnURL = "/")
@@ -226,5 +173,94 @@ namespace Web.Controllers
             await _signInManager.SignOutAsync();
             return Redirect(returnURL);
         }
+        [HttpGet]
+        public async Task<IActionResult> UpdateAccount()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.FindByEmailAsync(userEmail);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user); // truyền model cho form Razor
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateAccount(AppUserModel model, string oldPassword, string newPassword, string confirmPassword)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var userEmail = User.FindFirstValue(ClaimTypes.Email);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Cập nhật thông tin người dùng
+            user.UserName = model.UserName;
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+
+            IdentityResult updateResult = null;
+
+            // Nếu người dùng muốn đổi mật khẩu
+            if (!string.IsNullOrWhiteSpace(oldPassword) &&
+                !string.IsNullOrWhiteSpace(newPassword) &&
+                !string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                if (newPassword != confirmPassword)
+                {
+                    ModelState.AddModelError("", "Mật khẩu xác nhận không khớp.");
+                    return View(model);
+                }
+
+                var passwordCheck = await _userManager.CheckPasswordAsync(user, oldPassword);
+                if (!passwordCheck)
+                {
+                    ModelState.AddModelError("", "Mật khẩu cũ không đúng.");
+                    return View(model);
+                }
+
+                var changePasswordResult = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+                if (!changePasswordResult.Succeeded)
+                {
+                    foreach (var error in changePasswordResult.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    return View(model);
+                }
+            }
+
+            // Cập nhật các thông tin khác
+            updateResult = await _userManager.UpdateAsync(user);
+            if (updateResult.Succeeded)
+            {
+                TempData["success"] = "Cập nhật tài khoản thành công.";
+                return RedirectToAction("UpdateAccount");
+            }
+
+            foreach (var error in updateResult.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            return View(model);
+        }
+
+
     }
+
 }
+
