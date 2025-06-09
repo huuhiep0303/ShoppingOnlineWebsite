@@ -86,46 +86,65 @@ namespace Web.Areas.Admin.Controllers
             }
             return View(brand);
         }
-        [HttpPost("Edit")]
+        [HttpPost("Edit/{edit}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(BrandModel brand)
         {
-            if (ModelState.IsValid)
-            {
-                brand.Slug = brand.Name.Replace(" ", "-");
-                var slug = await _dataContext.Brands.FirstOrDefaultAsync(p => p.Slug == brand.Slug);
-                if (slug != null)
-                {
-                    ModelState.AddModelError("", "Brand has already had in Database!");
-                    return View(brand);
-                }
-                _dataContext.Update(brand);
-                await _dataContext.SaveChangesAsync();
-                TempData["success"] = "Update successful";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                TempData["error"] = "Model has error.";
-                List<string> errors = new List<string>();
-                foreach (var value in ModelState.Values)
-                {
-                    foreach (var error in value.Errors)
-                    {
-                        errors.Add(error.ErrorMessage);
-                    } 
-                }
-                string errorMsg = string.Join("\n", errors);
-                return BadRequest(errorMsg);
-            }
-            return View(brand);
-        }
-        [HttpPost("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(ProductModel product)
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Tạo slug mới từ tên
+        //        brand.Slug = brand.Name.Replace(" ", "-");
+
+        //        // Lấy bản ghi gốc từ database
+        //        var brandInDb = await _dataContext.Brands.FindAsync(brand.Id);
+        //        if (brandInDb == null)
+        //        {
+        //            return NotFound();
+        //        }
+
+        //        // Kiểm tra trùng slug (nếu muốn)
+        //        var slugExists = await _dataContext.Brands
+        //            .FirstOrDefaultAsync(p => p.Slug == brand.Slug && p.Id != brand.Id);
+        //        if (slugExists != null)
+        //        {
+        //            ModelState.AddModelError("", "Slug already exists in database!");
+        //            return View(brand);
+        //        }
+
+        //        // Cập nhật các thuộc tính cần thay đổi
+        //        brandInDb.Name = brand.Name;
+        //        brandInDb.Slug = brand.Slug;
+        //        brandInDb.Description = brand.Description;
+        //        // ... thêm các thuộc tính cần cập nhật
+
+        //        await _dataContext.SaveChangesAsync();
+
+        //        TempData["success"] = "Update successful";
+        //        return RedirectToAction("Index");
+        //    }
+        //    else
+        //    {
+        //        TempData["error"] = "Model has error.";
+        //        List<string> errors = new List<string>();
+        //        foreach (var value in ModelState.Values)
+        //        {
+        //            foreach (var error in value.Errors)
+        //            {
+        //                errors.Add(error.ErrorMessage);
+        //            }
+        //        }
+        //        string errorMsg = string.Join("\n", errors);
+        //        return BadRequest(errorMsg);
+        //    }
+        //}
+        [HttpGet("Delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            BrandModel brand = await _dataContext.Brands.FindAsync(product.Id);
-            _dataContext.Brands.RemoveRange(brand);
+            var brand = await _dataContext.Brands.FindAsync(id);
+            if (brand == null)
+                return NotFound();
+
+            _dataContext.Brands.Remove(brand);
             await _dataContext.SaveChangesAsync();
             TempData["success"] = "Delete successful!";
             return RedirectToAction("Index");
