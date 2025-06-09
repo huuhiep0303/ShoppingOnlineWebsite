@@ -157,7 +157,7 @@ namespace Web.Controllers
                 IdentityResult result = await _userManager.CreateAsync(newUser, usermodel.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(newUser, "Admin");
+                    await _userManager.AddToRoleAsync(newUser, "Customer");
                     TempData["success"] = "Register successfully";
                     return Redirect("/account/login");
                 }

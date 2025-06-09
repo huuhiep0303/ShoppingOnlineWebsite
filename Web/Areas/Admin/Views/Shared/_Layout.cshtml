@@ -73,8 +73,11 @@
 								<li><a asp-controller="Category">Manage Category</a></li>
 								<li><a asp-controller="Brand">Manage Brand</a></li>
 								<li><a asp-controller="Order" asp-action="Index">Manage Order</a></li>
-								<li><a asp-controller="User" asp-action="Index">Manage User</a></li>
-								<li><a asp-controller="Role" asp-action="Index">Manage Role</a></li>
+								@if (User.IsInRole("Admin"))
+								{
+									<li><a asp-controller="User" asp-action="Index">Manage User</a></li>
+									<li><a asp-controller="Role" asp-action="Index">Manage Role</a></li>
+								}
 							</ul>
 						</div>
 					</div>

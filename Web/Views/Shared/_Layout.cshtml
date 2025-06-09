@@ -84,10 +84,16 @@
 									<a asp-controller="Product">Shop<i class="fa fa-angle-down"></i></a>
 									<ul role="menu" class="sub-menu">
 										<li><a asp-action="Index" asp-controller="Cart">Cart</a></li>
-										<li><a asp-action="Login" asp-controller="Account">Login</a></li>
+										@if (!User.Identity?.IsAuthenticated ?? false)
+										{
+											<li><a asp-action="Login" asp-controller="Account">Login</a></li>
+										}
 									</ul>
 								</li>
-								<li><a asp-area="Admin" asp-controller="Product" asp-action="Index">Manage</a></li>
+								@if (!User.IsInRole("Customer"))
+								{
+									<li><a asp-area="Admin" asp-controller="Product" asp-action="Index">Manage</a></li>
+								}
 							</ul>
 						</div>
 					</div>
