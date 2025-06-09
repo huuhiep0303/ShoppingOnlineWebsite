@@ -60,12 +60,12 @@ namespace Web.Areas.Admin.Controllers
                 var slug = await _dataContext.Brands.FirstOrDefaultAsync(p => p.Slug == brand.Slug);
                 if (slug != null)
                 {
-                    ModelState.AddModelError("", "Thương hiệu đã có trong database");
+                    ModelState.AddModelError("", "Brand has already had in Database!");
                     return View(brand);
                 }
                 _dataContext.Add(brand);
                 await _dataContext.SaveChangesAsync();
-                TempData["success"] = "Thêm thương hiệu thành công";
+                TempData["success"] = "Insert successful!";
                 return RedirectToAction("Index");
             }
             else
@@ -94,12 +94,12 @@ namespace Web.Areas.Admin.Controllers
                 var slug = await _dataContext.Brands.FirstOrDefaultAsync(p => p.Slug == brand.Slug);
                 if (slug != null)
                 {
-                    ModelState.AddModelError("", "Thương hiệu đã có trong database");
+                    ModelState.AddModelError("", "Brand has already had in Database!");
                     return View(brand);
                 }
                 _dataContext.Update(brand);
                 await _dataContext.SaveChangesAsync();
-                TempData["success"] = "Cập nhật thương hiệu thành công";
+                TempData["success"] = "Update successful";
                 return RedirectToAction("Index");
             }
             else
@@ -118,12 +118,12 @@ namespace Web.Areas.Admin.Controllers
             }
             return View(brand);
         }
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(ProductModel product)
         {
-            BrandModel brand = await _dataContext.Brands.FindAsync(id);
-            _dataContext.Brands.Remove(brand);
+            BrandModel brand = await _dataContext.Brands.FindAsync(product.Id);
+            _dataContext.Brands.RemoveRange(brand);
             await _dataContext.SaveChangesAsync();
-            TempData["success"] = "Xóa thương hiệu thành công";
+            TempData["success"] = "Delete successful!";
             return RedirectToAction("Index");
         }
     }
